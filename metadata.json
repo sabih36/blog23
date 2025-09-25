@@ -1,0 +1,5 @@
+{
+  "name": "Gemini Blog Platform",
+  "description": "A modern blog platform featuring a Markdown editor and AI-powered post summaries, built with React, Tailwind CSS, and Gemini.",
+  "requestFramePermissions": []
+}
