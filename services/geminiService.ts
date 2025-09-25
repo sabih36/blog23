@@ -1,19 +1,22 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-// Ensure the API key is available from environment variables
-if (!process.env.API_KEY) {
-    // In a real app, you'd have a more robust way of handling this,
-    // but for this context, we'll throw an error if it's missing.
-    // The framework is expected to provide this variable.
-    console.warn("API_KEY environment variable not set. Gemini API calls will fail.");
+// This shim is necessary because the app runs in a browser without a build step,
+// so `process` is not defined. We default to an undefined API key.
+const API_KEY = (typeof process !== 'undefined' && process.env && process.env.API_KEY) 
+  ? process.env.API_KEY 
+  : undefined;
+
+// Warn if the API key is not available.
+if (!API_KEY) {
+    console.warn("API_KEY environment variable not set. Gemini API calls will use mock data.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+// Initialize the AI client only if the API key is present.
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 export const generateSummary = async (content: string): Promise<string> => {
-  if (!process.env.API_KEY) {
-    // Return a mock summary if API key is not available
+  // If the AI client wasn't initialized, return a mock summary.
+  if (!ai) {
     return "This is a mock summary. Set up your Gemini API key to generate a real one.";
   }
   
